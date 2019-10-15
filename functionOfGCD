@@ -1,0 +1,97 @@
+//C++
+// funcOfGCD.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+int GCD(int a, int b) {
+	int temp;
+	while (a%b != 0) {
+		temp = b;
+		b = a%b;
+		a = temp;
+	}
+	return b;
+};
+
+//f(x)=GCD(1,x)+GCD(2,x)+----+GCD(x,x)
+//ans=f(a)+f(a+1)+---+f(b)
+void findFunF() {
+	const int k = 1000000007;
+	long int n, temp;
+	long int f[101] = { 0 };
+	cin >> n;
+	int a[100 + 1];
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+	}
+	int q, x, y;
+	char c;
+	long int res = 0;
+	cin >> q;
+	while (q>0) {
+		res = 0;
+		cin >> c >> x >> y;
+		if (c == 'U') {
+			a[x] = y;
+		}
+		else {
+			for (int i = x; i <= y; i++) {
+				if (f[a[i]] == 0) {
+					f[a[i]] = 1 + a[i];
+					for (int j = 2; j<a[i]; j++) {
+						temp = GCD(a[i], j);
+						f[a[i]] = (f[a[i]] + temp) % k;
+					}
+				}
+				res = (res + f[a[i]]) % k;
+			}
+			cout << res << endl;
+		}
+		q--;
+	}
+}
+
+void addEdge(vector<pair<int, int>> a[], int a1, int b, int wt) {
+	a[a1].push_back(make_pair(b, wt));
+	a[b].push_back(make_pair(a1, wt));
+};
+int findMaxWt(vector<pair<int, int>> a[], int i, int j, int wt) {
+	for (auto x = a[i].begin(); x != a[i].end(); x++) {
+		if (x->first == j)
+			return(max(wt, x->second));
+	}
+	for (auto x = a[i].begin(); x != a[i].end(); x++) {
+		if (x->first <= i)
+			continue;
+		wt = findMaxWt(a, x->first, j, x->second);
+	}
+	return wt;
+};
+
+int main() {
+	int t, n, a1, a2, w;
+	cin >> t;
+	while (t>0) {
+		cin >> n;
+		vector<pair<int, int>> a[5 + 1];
+		for (int i = 0; i < 4; i++) {
+			cin >> a1 >> a2 >> w;
+			addEdge(a, a1, a2, w);
+		}
+		for (int i = 1; i < 6; i++)
+		{
+			vector<pair<int, int>> *b(a);
+			for (int j = i + 1; j < 6; j++)
+				cout << findMaxWt(a, i, j, 0) << " ";
+			cout << endl;
+		}
+		t--;
+	}
+	return 0;
+}
