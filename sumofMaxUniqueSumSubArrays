@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace sumofMaxUniqueSumofSubArrays
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int n;
+            n = Convert.ToInt32(Console.ReadLine());
+            int[] a = new int[n];
+            sumIndex [,]m = new sumIndex[n,n];
+            //for(int i = 0; i < n; i++)
+            //{
+            //    for(int j = 0; j < n; j++)
+            //    {
+            //        m[i, j] = new sumIndex();
+            //        m[i, j].sum = 0;
+            //        m[i, j].startIndex = 0;
+            //        m[i, j].endIndex = 0;
+            //    }
+            //}
+            Int64[] sum = new Int64[(n + 1) * n / 2];
+            int count = 0;Int64 output = 0;
+            string s = Console.ReadLine();
+            string[] arr = s.Split(' ');
+            for (int i = 0; i < n; i++)
+            {
+                a[i] = Int32.Parse(arr[i]);
+                m[i, i] = new sumIndex();
+                m[i, i].sum = a[i];
+                m[i, i].endIndex = i;
+                m[i, i].startIndex = i;
+            }
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = i; j < n; j++)
+                {
+                    if (j > i)
+                        CalculateMaxSum(i, j, a, m);
+                    sum[count] = m[i, j].sum;
+                    count++;
+                }
+            }
+            var collectionWithDistinctElements = sum.Distinct().ToArray();
+            for (int i = 0; i < collectionWithDistinctElements.Length; i++)
+                output = output + collectionWithDistinctElements[i];
+            Console.WriteLine(output);
+        }
+
+        static void CalculateMaxSum(int i,int j, int[] a, sumIndex[,] m)
+        {
+            m[i, j] = new sumIndex();
+            m[i, j].sum = m[i, j - 1].sum;
+            m[i, j].endIndex = m[i, j - 1].endIndex;
+            m[i, j].startIndex = m[i, j - 1].startIndex;
+            if ((m[i, j].endIndex == j - 1)&&(m[i, j].sum+a[j]> m[i, j].sum))
+            {
+                m[i, j].sum = m[i, j].sum + a[j];
+                m[i, j].endIndex = j;
+            }
+            int s = 0;
+            for (int x = m[i, j].startIndex; x <= j; x++)
+            {
+                s = s + a[x];
+            }
+            if (s > m[i, j].sum)
+            {
+                m[i, j].sum = s;
+                m[i, j].endIndex = j;
+                m[i, j].startIndex = m[i, j - 1].startIndex;
+            }
+            if (a[j] > m[i, j].sum)
+            {
+                m[i, j].sum = a[j];
+                m[i, j].endIndex = j;
+                m[i, j].startIndex = j;
+            }
+        }
+    }
+    class sumIndex
+    {
+        public int sum { get; set; }
+        public int startIndex { get; set; }
+        public int endIndex { get; set; }
+    }
+}
