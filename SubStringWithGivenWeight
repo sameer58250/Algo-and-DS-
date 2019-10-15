@@ -1,0 +1,51 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+
+public class program
+{
+    static void Main()
+    {
+        //SubStringsWithWeight();
+    }
+
+
+    /// <summary>
+    /// for a given weight k, it finds number of substring having weight equla to k. Weight = {a->1, z->26}
+    /// </summary>
+    static void SubStringsWithWeight()
+    {
+        int t = Convert.ToInt32(Console.ReadLine());
+        while (t > 0)
+        {
+            int k = Convert.ToInt32(Console.ReadLine());
+            string s = Console.ReadLine().Trim(' ');
+            int res = 0;
+            int i = 0, j = 0;
+            int count = 0;
+            while (j < s.Length)
+            {
+                while (i <= j && count > k)
+                {
+                    count = count - (s[i] - 'a' + 1);
+                    i++;
+                }
+                while (j < s.Length && count < k)
+                {
+                    count = count + (s[j] - 'a' + 1);
+                    j++;
+                }
+                if (count == k)
+                {
+                    res += 1;
+                    count = count - (s[i] - 'a' + 1);
+                    i++;
+                }
+            }
+            Console.WriteLine(res);
+            t--;
+        }
+    }
+}
