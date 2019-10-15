@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ReverseStackUsingRecursion
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Stack<int> st = new Stack<int>();
+            st.Push(1);
+            st.Push(2);
+            st.Push(3);
+            st.Push(4);
+            st.Push(5);
+            Reverse(st);
+            while (st.Count > 0)
+            {
+                Console.WriteLine(st.Pop());
+            }
+            string s = "";
+            generateValidParenthesis(5, 5, s);
+        }
+
+        static void Reverse(Stack<int> st)
+        {
+            if (st.Count > 0)
+            {
+                int x = st.Pop();
+                Reverse(st);
+                InsertAtBottom(st,x);
+            }
+        }
+
+        private static void InsertAtBottom(Stack<int> st,int x)
+        {
+            if (st.Count == 0)
+            {
+                st.Push(x);
+            }
+            else
+            {
+                int y = st.Pop();
+                InsertAtBottom(st, x);
+                st.Push(y);
+            }
+        }
+
+        private static void generateValidParenthesis(int open, int close, String s)
+        {
+            if (open == 0 && close == 0)
+            {
+                Console.WriteLine(s);
+            }
+            else
+            {
+                if (open > 0)
+                {
+                    generateValidParenthesis(open - 1, close, s + "(");
+                }
+                if (close > open)
+                {
+                    generateValidParenthesis(open, close - 1, s + ")");
+                }
+            }
+        }
+    }
+}
